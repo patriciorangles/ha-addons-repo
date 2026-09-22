@@ -2,7 +2,7 @@ name: "Remote Healthcheck"
 version: "1.0.0"
 slug: "ha_remote_healthcheck"
 description: "Revisa periódicamente si Home Assistant es accesible desde internet (no solo en la red local) y, si detecta caídas prolongadas, reinicia automáticamente el add-on responsable (ej. Cloudflared) y notifica por push."
-url: "https://github.com/<tu-usuario>/ha-remote-healthcheck"
+url: "https://github.com/<tu-usuario>/ha-addons-repo/tree/main/ha-remote-healthcheck"
 arch:
   - aarch64
   - amd64
