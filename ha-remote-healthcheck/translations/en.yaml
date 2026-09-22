@@ -1,0 +1,33 @@
+configuration:
+  public_url:
+    name: Public URL
+    description: >-
+      Full URL to check (e.g. https://your-domain.example.com/). Any 2xx/3xx/4xx
+      response counts as reachable; only 5xx or a connection failure counts as down.
+  check_interval_seconds:
+    name: Check interval (seconds)
+    description: How often to check the public URL.
+  timeout_seconds:
+    name: Timeout (seconds)
+    description: How long to wait for a response before considering that check a failure.
+  fails_before_restart:
+    name: Consecutive failures before restart
+    description: How many consecutive failed checks trigger an automatic restart of the target add-on.
+  fails_before_escalate:
+    name: Consecutive failures before escalating
+    description: >-
+      How many consecutive failed checks (after already having restarted once)
+      before sending a "still down, check manually" notification instead of
+      restarting again.
+  restart_addon_slug:
+    name: Add-on to restart
+    description: >-
+      Slug of the add-on to restart on failure (e.g. the Cloudflared tunnel
+      add-on). Find it in Settings > Add-ons > (your add-on) > the slug shown
+      in the URL, or via Developer Tools > Actions > hassio.addon_restart.
+  notify_targets:
+    name: Notify services
+    description: >-
+      List of notify service names to alert (without the "notify." prefix),
+      e.g. mobile_app_myphone. See Developer Tools > Actions, domain "notify",
+      for the exact names available on your system.
