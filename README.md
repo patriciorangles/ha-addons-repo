@@ -13,6 +13,9 @@ add-ons aquí mismo, cada uno como una carpeta nueva con su propio
   Home Assistant es accesible desde internet y repara/notifica solo si detecta
   una caída sostenida del túnel/proxy que uses (Cloudflared, Nginx Proxy
   Manager, etc.).
+- **[Swappiness Tuner](./ha-swappiness-tuner/README.md)** — ajusta
+  `vm.swappiness` en cada arranque, porque Home Assistant OS lo trae fijo en 1
+  y no lo expone en ninguna parte de su configuración.
 
 ## Cómo agregar este repositorio a tu Home Assistant
 

@@ -1,0 +1,8 @@
+configuration:
+  swappiness:
+    name: Swappiness
+    description: >-
+      Value from 0 to 100 for the kernel's vm.swappiness. 60 is Linux's
+      standard default. Higher values move memory to swap sooner (more free
+      RAM headroom, somewhat more disk I/O). Lower values keep everything in
+      RAM as long as possible.
