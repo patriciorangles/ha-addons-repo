@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.4
+
+- Fix definitivo: el perfil AppArmor `docker-default` (activo por defecto en
+  todo add-on) bloquea explícitamente la escritura a `/proc/sys/**`
+  (`deny /proc/sys/** wklx`) sin importar que el proceso sea root o tenga
+  `SYS_ADMIN` — confirmado inspeccionando `/proc/self/attr/current` dentro
+  del contenedor. Se agrega `apparmor: false` al `config.yaml`. Verificado en
+  un contenedor de prueba con el mismo perfil de seguridad antes de publicar:
+  la escritura funciona correctamente con este cambio.
+
 ## 1.0.3
 
 - Fix real: el `mount` de BusyBox (default de Alpine) no reconocía los

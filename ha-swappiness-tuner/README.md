@@ -36,12 +36,19 @@ swappiness: 60
 
 ## Cómo funciona por dentro
 
-Escribe directamente en `/proc/sys/vm/swappiness` al arrancar. Necesita el
-permiso `privileged: SYS_ADMIN` porque Docker bloquea la escritura a
-parámetros del kernel compartidos con el host por defecto — sin ese permiso,
-Home Assistant OS ni siquiera deja intentarlo (falla con "read-only file
-system"). No toca nada más del sistema, no descarga nada, no corre en bucle:
-aplica el valor y termina.
+Escribe directamente en `/proc/sys/vm/swappiness` al arrancar. Necesita dos
+cosas para lograrlo, ambas confirmadas por prueba directa, no por suposición:
+
+- `privileged: SYS_ADMIN` — sin esto, ni siquiera se puede remontar
+  `/proc/sys` en lectura-escritura (falla con "read-only file system").
+- `apparmor: false` — el perfil `docker-default` que Docker aplica a todo
+  contenedor por defecto tiene una regla explícita que bloquea escrituras a
+  `/proc/sys/**`, sin importar que el proceso sea root o tenga `SYS_ADMIN`
+  (falla con "Permission denied" en vez de "read-only", esa es la pista de
+  que el bloqueo viene de AppArmor y no del propio mount).
+
+No toca nada más del sistema, no descarga nada, no corre en bucle: aplica el
+valor y termina.
 
 ## Instalación
 
