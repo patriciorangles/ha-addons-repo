@@ -18,7 +18,7 @@ add-ons aquí mismo, cada uno como una carpeta nueva con su propio
 
 1. **Ajustes → Add-ons → Tienda de add-ons** → menú de tres puntos (⋮) →
    **Repositorios**.
-2. Pega la URL de este repositorio.
+2. Pega `https://github.com/patriciorangles/ha-addons-repo`.
 3. Busca el add-on que quieras en la tienda e instálalo normalmente — todos
    los add-ons de este repositorio aparecen listados por separado.
 

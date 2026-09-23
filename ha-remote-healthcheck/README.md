@@ -62,7 +62,7 @@ público: no hay ningún secreto embebido en el código.
 ## Instalación
 
 1. Settings → Add-ons → Add-on Store → menú (⋮) → Repositories.
-2. Pega la URL de este repositorio de GitHub.
+2. Pega `https://github.com/patriciorangles/ha-addons-repo`.
 3. Busca "Remote Healthcheck" en la tienda, instálalo, configúralo y arráncalo.
 
 ## Limitaciones conocidas
