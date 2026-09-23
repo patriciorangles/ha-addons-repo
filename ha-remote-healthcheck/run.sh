@@ -8,10 +8,17 @@ OPTIONS_FILE="/data/options.json"
 STATE_DIR="/data/state"
 FAIL_COUNT_FILE="${STATE_DIR}/fail_count"
 RESTARTED_FILE="${STATE_DIR}/restart_attempted"
+ESCALATED_FILE="${STATE_DIR}/escalated"
 
 mkdir -p "$STATE_DIR"
-[ -f "$FAIL_COUNT_FILE" ] || echo 0 > "$FAIL_COUNT_FILE"
-[ -f "$RESTARTED_FILE" ] || echo 0 > "$RESTARTED_FILE"
+# Siempre arranca en limpio: un arranque del add-on (por reinicio del host,
+# del propio add-on, o de Supervisor) significa que no sabemos el estado
+# real todavia, así que no tiene sentido arrastrar fallos de antes del
+# arranque (ej. un reinicio del host reinicia tambien lo que se estaba
+# revisando, dejando obsoleto cualquier conteo previo).
+echo 0 > "$FAIL_COUNT_FILE"
+echo 0 > "$RESTARTED_FILE"
+echo 0 > "$ESCALATED_FILE"
 
 PUBLIC_URL=$(bashio::config 'public_url')
 CHECK_INTERVAL=$(bashio::config 'check_interval_seconds')
@@ -68,6 +75,7 @@ while true; do
         fi
         echo 0 > "$FAIL_COUNT_FILE"
         echo 0 > "$RESTARTED_FILE"
+        echo 0 > "$ESCALATED_FILE"
     else
         fails=$(( $(cat "$FAIL_COUNT_FILE") + 1 ))
         echo "$fails" > "$FAIL_COUNT_FILE"
@@ -75,14 +83,15 @@ while true; do
 
         minutes=$(( fails * CHECK_INTERVAL / 60 ))
 
-        if [ "$fails" -eq "$FAILS_BEFORE_RESTART" ] && [ "$(cat "$RESTARTED_FILE")" = "0" ]; then
+        if [ "$fails" -ge "$FAILS_BEFORE_RESTART" ] && [ "$(cat "$RESTARTED_FILE")" = "0" ]; then
             bashio::log.warning "${fails} fallos seguidos, reiniciando ${RESTART_ADDON_SLUG}"
             restart_addon
             echo 1 > "$RESTARTED_FILE"
             notify_all "Problema con acceso remoto a HA" \
                 "No se pudo acceder a Home Assistant desde internet en los últimos ${minutes} min. Se reinició '${RESTART_ADDON_SLUG}' automáticamente."
-        elif [ "$fails" -eq "$FAILS_BEFORE_ESCALATE" ]; then
+        elif [ "$fails" -ge "$FAILS_BEFORE_ESCALATE" ] && [ "$(cat "$ESCALATED_FILE")" = "0" ]; then
             bashio::log.error "${fails} fallos seguidos tras el reinicio, escalando"
+            echo 1 > "$ESCALATED_FILE"
             notify_all "Acceso remoto a HA sigue caído" \
                 "Ya se reinició '${RESTART_ADDON_SLUG}' pero el acceso remoto sigue sin funcionar tras ${minutes} min. Revisar manualmente."
         fi
