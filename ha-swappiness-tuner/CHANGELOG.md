@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.3
+
+- Fix real: el `mount` de BusyBox (default de Alpine) no reconocía los
+  bind-mounts de `/proc/sys` en este runtime ("can't find ... in
+  /proc/mounts"). Se agrega el paquete `util-linux` para tener un `mount`
+  completo, capaz de remontar `/proc/sys` (y `/proc` como respaldo) en
+  lectura-escritura correctamente.
+
 ## 1.0.2
 
 - Fix: el `mount` de BusyBox no reconocía `/proc/sys` como bind-mount propio

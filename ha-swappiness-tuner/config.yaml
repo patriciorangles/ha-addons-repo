@@ -1,5 +1,5 @@
 name: "Swappiness Tuner"
-version: "1.0.2"
+version: "1.0.3"
 slug: "ha_swappiness_tuner"
 description: "Ajusta vm.swappiness en cada arranque, porque Home Assistant OS lo trae fijo en 1 y no lo expone en ninguna parte."
 url: "https://github.com/patriciorangles/ha-addons-repo/tree/main/ha-swappiness-tuner"

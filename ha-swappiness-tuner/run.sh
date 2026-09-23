@@ -16,20 +16,19 @@ if write_swappiness; then
     exit 0
 fi
 
-bashio::log.warning "Escritura directa fallo: $(cat /tmp/swappiness_err)"
-bashio::log.info "Intentando remontar /proc en modo lectura-escritura..."
+bashio::log.warning "Escritura directa fallo: $(cat /tmp/swappiness_err 2>/dev/null || echo '(sin mensaje capturado, ver linea anterior)')"
+bashio::log.info "Intentando remontar /proc/sys en modo lectura-escritura (util-linux)..."
 
-# Docker suele montar partes de /proc de solo-lectura por defecto aunque el
-# contenedor tenga SYS_ADMIN. Se intenta remontar /proc (el mount padre, que
-# si aparece como entrada propia) en vez de /proc/sys directamente, ya que
-# el mount de BusyBox no siempre reconoce bind-mounts internos de /proc/sys.
-# Esto solo afecta la vista de ESTE contenedor, no al host ni a otros add-ons.
-mount -o remount,rw /proc 2>&1 | while read -r line; do bashio::log.info "mount: $line"; done
-
-if write_swappiness; then
-    bashio::log.info "vm.swappiness establecido en ${SWAPPINESS} tras remontar /proc (valor actual: $(cat "$SWAPPINESS_FILE"))"
-    exit 0
-fi
+# Docker monta /proc/sys de solo-lectura por defecto aunque el contenedor
+# tenga SYS_ADMIN. Esto solo afecta la vista de ESTE contenedor, no al host
+# ni a otros add-ons.
+for target in /proc/sys /proc; do
+    mount -o remount,rw "$target" 2>&1 | while read -r line; do bashio::log.info "mount ${target}: $line"; done
+    if write_swappiness; then
+        bashio::log.info "vm.swappiness establecido en ${SWAPPINESS} tras remontar ${target} (valor actual: $(cat "$SWAPPINESS_FILE"))"
+        exit 0
+    fi
+done
 
 bashio::log.error "Sigue sin poder escribirse en ${SWAPPINESS_FILE}."
 bashio::log.error "Error real: $(cat /tmp/swappiness_err)"
